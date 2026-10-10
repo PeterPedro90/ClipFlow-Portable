@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0c0f1b">
+  <meta name="description" content="ClipFlow: interface local para converter seus vídeos autorizados para MP3 ou MP4 com opções de qualidade.">
+  <title>ClipFlow — Áudio e vídeo do seu jeito</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="stylesheet" href="/assets/style.css">
+  <script defer src="/assets/app.js"></script>
+</head>
+<body>
+  <div class="ambient ambient-one" aria-hidden="true"></div>
+  <div class="ambient ambient-two" aria-hidden="true"></div>
+
+  <header class="site-header shell">
+    <a class="brand" href="/" aria-label="ClipFlow início">
+      <span class="brand-mark">
+        <svg viewBox="0 0 32 32" width="26" height="26" fill="none" aria-hidden="true">
+          <path d="M7 7.8c0-1 .8-1.8 1.8-1.8h14.4c1 0 1.8.8 1.8 1.8v16.4c0 1-.8 1.8-1.8 1.8H8.8c-1 0-1.8-.8-1.8-1.8V7.8Z" stroke="currentColor" stroke-width="2.4"/>
+          <path d="m13 11 8 5-8 5V11Z" fill="currentColor"/>
+        </svg>
+      </span>
+      <span>clip<span class="brand-accent">flow</span><span class="brand-dot">.</span></span>
+    </a>
+    <div class="header-right">
+      <span class="local-label"><span class="live-dot"></span> Versão local</span>
+      <a class="header-link" href="#como-funciona">Como funciona <span aria-hidden="true">↗</span></a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero shell">
+      <div class="eyebrow"><span class="eyebrow-line"></span> UM LINK. VÁRIAS POSSIBILIDADES.</div>
+      <h1>Seu conteúdo, <span class="gradient-text">do seu jeito.</span></h1>
+      <p class="hero-description">Transforme vídeos autorizados do YouTube em áudio MP3 ou vídeo MP4. Escolha o formato, selecione a qualidade e salve.</p>
+
+      <div class="converter-card" id="converter">
+        <div class="card-upper">
+          <div class="section-label"><span class="step-number">01</span> COLE O LINK DO VÍDEO</div>
+          <span class="support-note">YouTube • Shorts • youtu.be</span>
+        </div>
+
+        <form id="analyze-form" class="link-form" novalidate>
+          <div class="link-field">
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="m9 15 6-6M8 11l-2 2a4 4 0 0 0 6 6l2-2M16 13l2-2a4 4 0 0 0-6-6l-2 2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <input id="url-input" type="url" inputmode="url" spellcheck="false" autocomplete="url" placeholder="https://www.youtube.com/watch?v=..." aria-label="Endereço do vídeo do YouTube" required maxlength="500">
+            <button id="paste-btn" type="button" class="paste-button" title="Colar link da área de transferência">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="7" y="5" width="13" height="16" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M16 5V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h1" stroke="currentColor" stroke-width="1.7"/></svg>
+              Colar
+            </button>
+          </div>
+          <button class="primary-button" type="submit" id="analyze-button">
+            <span id="analyze-text">Analisar vídeo</span>
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </form>
+        <div id="error-banner" class="alert alert-error hidden" role="alert"></div>
+        <div id="setup-banner" class="alert alert-warning hidden" role="status"></div>
+
+        <div id="results" class="results hidden">
+          <div class="inner-divider"></div>
+          <div class="result-top"><span class="section-label"><span class="step-number">02</span> ESCOLHA O FORMATO</span><span class="success-tiny">✓ Vídeo encontrado</span></div>
+          <div class="video-overview">
+            <div class="thumbnail-wrap"><img id="video-thumb" alt="Miniatura do vídeo"><span id="video-duration" class="duration-label"></span></div>
+            <div class="video-meta"><span class="video-tag">SEU VÍDEO</span><h2 id="video-title"></h2><p id="video-channel"></p></div>
+          </div>
+
+          <div class="mode-tabs" role="tablist" aria-label="Formato de saída">
+            <button type="button" class="mode-tab active" id="mp4-tab" role="tab" aria-selected="true" aria-controls="quality-panel" data-mode="mp4">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3" stroke="currentColor" stroke-width="1.8"/><path d="m10 9 5 3-5 3V9Z" fill="currentColor"/></svg>
+              Vídeo <strong>MP4</strong>
+            </button>
+            <button type="button" class="mode-tab" id="mp3-tab" role="tab" aria-selected="false" aria-controls="quality-panel" data-mode="mp3">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M10 17V5l10-2v12M10 17a4 3 0 1 1-8 0 4 3 0 0 1 8 0Zm10-2a4 3 0 1 1-8 0 4 3 0 0 1 8 0Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Áudio <strong>MP3</strong>
+            </button>
+          </div>
+
+          <div id="quality-panel" role="tabpanel" aria-labelledby="mp4-tab">
+            <div class="quality-heading"><span>Qualidade desejada</span><span id="quality-help">Resoluções encontradas neste vídeo</span></div>
+            <div id="quality-options" class="quality-options" role="group" aria-label="Opções de qualidade"></div>
+            <p id="quality-explanation" class="quality-footnote">O MP4 reúne áudio e vídeo. A disponibilidade depende do conteúdo original.</p>
+          </div>
+
+          <button type="button" class="download-button" id="download-button">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 18v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Preparar arquivo</span><span class="download-chevron">→</span>
+          </button>
+        </div>
+
+        <div class="progress-card hidden" id="progress-card" aria-live="polite">
+          <div class="inner-divider"></div>
+          <div class="progress-top"><span id="progress-status">Preparando o arquivo...</span><span id="progress-percentage">0%</span></div>
+          <div class="progress-track"><div id="progress-fill" class="progress-fill"></div></div>
+          <p class="progress-caption">Você pode manter esta aba aberta enquanto o servidor processa seu arquivo.</p>
+        </div>
+
+        <div class="ready-card hidden" id="ready-card" aria-live="polite">
+          <div class="inner-divider"></div>
+          <div class="ready-icon">✓</div>
+          <div><h3>Seu arquivo está pronto!</h3><p>Toque abaixo para salvar no seu dispositivo.</p></div>
+          <a class="save-button" id="save-button" href="#">↓ Baixar arquivo agora</a>
+        </div>
+      </div>
+      <p class="under-card"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" stroke="currentColor" stroke-width="1.7"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="1.7" fill="none"/></svg> Executado no seu computador · Sem cadastro · Somente vídeos autorizados</p>
+    </section>
+
+    <section id="como-funciona" class="how-section shell">
+      <div class="how-head"><div><div class="eyebrow secondary-eyebrow">SIMPLES ASSIM</div><h2>Três passos. <span>Pronto.</span></h2></div><p>Sem complicação: tudo em uma única página, de ponta a ponta.</p></div>
+      <div class="feature-grid">
+        <article class="feature-card"><div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div><span class="feature-no">01 / COLE</span><h3>Insira o link</h3><p>Copie o endereço do vídeo no YouTube e cole no campo acima.</p></article>
+        <article class="feature-card"><div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 17h16M8 4v6m8 4v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div><span class="feature-no">02 / PERSONALIZE</span><h3>Escolha a qualidade</h3><p>Selecione MP3 com bitrate definido ou MP4 na resolução encontrada.</p></article>
+        <article class="feature-card"><div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 17v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="feature-no">03 / SALVE</span><h3>Faça o download</h3><p>Espere a preparação terminar e salve o arquivo com um clique.</p></article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer shell"><div class="footer-brand">clip<span>flow</span>.</div><p>Ferramenta local para conteúdo próprio ou autorizado.</p><span>Feito para simplificar.</span></footer>
+</body>
+</html>
